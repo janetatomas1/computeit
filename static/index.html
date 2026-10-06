@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ComputeIT — GPU Computing, C++ &amp; System Design</title>
+  <meta name="description" content="ComputeIT is an engineering studio for GPU computation, high-performance C++ and large-scale system design.">
+  <meta name="theme-color" content="#050607">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0c0f'/%3E%3Crect x='7' y='7' width='18' height='18' rx='3' fill='none' stroke='%234ee0c1' stroke-width='2'/%3E%3Crect x='12' y='12' width='3' height='3' fill='%234ee0c1'/%3E%3Crect x='17' y='12' width='3' height='3' fill='%234ee0c1'/%3E%3Crect x='12' y='17' width='3' height='3' fill='%234ee0c1'/%3E%3Crect x='17' y='17' width='3' height='3' fill='%23ffb454'/%3E%3C/svg%3E">
+  <script>
+    // Runs before first paint: enable JS-only styles and restore the saved theme (no flash).
+    document.documentElement.classList.add('js');
+    try { var t = localStorage.getItem('computeit-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ───────────── Header ───────────── -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="ComputeIT — home">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="4" y="4" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M10 1v3M16 1v3M22 1v3M10 28v3M16 28v3M22 28v3M1 10h3M1 16h3M1 22h3M28 10h3M28 16h3M28 22h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <rect x="10" y="10" width="4" height="4" rx="1" fill="currentColor"/>
+          <rect x="18" y="10" width="4" height="4" rx="1" fill="currentColor"/>
+          <rect x="10" y="18" width="4" height="4" rx="1" fill="currentColor"/>
+          <rect x="18" y="18" width="4" height="4" rx="1" class="mark-hot"/>
+        </svg>
+        <span class="brand-name">Compute<b>IT</b></span>
+      </a>
+
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#code">Code</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#approach">Approach</a>
+        <a href="#results">Results</a>
+        <a class="btn btn-primary btn-sm nav-cta" href="#contact">Start a project</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to light theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav">
+          <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ───────────── Hero ───────────── -->
+    <section class="hero" aria-labelledby="hero-title">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="pulse" aria-hidden="true"></span> Engineering studio · GPU · C++ · Systems</p>
+          <h1 id="hero-title">Software that runs at the <em>speed of parallel.</em></h1>
+          <p class="lead">ComputeIT designs and builds GPU-accelerated, low-latency systems. We turn slow, sequential workloads into fast, reliable, production-grade platforms — from the CUDA kernel up to the cluster architecture.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Talk to an engineer</a>
+            <a class="btn btn-ghost" href="#capabilities">What we do <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+
+        <div class="term" aria-hidden="true">
+          <div class="term-bar"><i></i><i></i><i></i><span>profile — matmul_tiled&lt;32&gt;</span></div>
+          <div class="term-body">
+            <p><span class="prompt">$</span> nsys profile ./computeit_bench</p>
+            <p class="dim">kernel  matmul_tiled&lt;32&gt;   grid 512×512</p>
+            <div class="bar-row"><span>SM occupancy</span><div class="bar" style="--v:92%"><i></i></div><b>92%</b></div>
+            <div class="bar-row"><span>Mem throughput</span><div class="bar" style="--v:87%"><i></i></div><b>87%</b></div>
+            <div class="bar-row"><span>Warp efficiency</span><div class="bar" style="--v:96%"><i></i></div><b>96%</b></div>
+            <div class="bar-row"><span>L2 hit rate</span><div class="bar" style="--v:74%"><i></i></div><b>74%</b></div>
+            <p class="ok"><span>✔</span> 162.0 ms → 4.3 ms <em>(37.7× faster)</em></p>
+            <p class="dim caret">ready<span class="cursor"></span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Stats strip ───────────── -->
+    <section class="strip" aria-label="ComputeIT at a glance">
+      <div class="container strip-grid">
+        <div class="strip-item"><strong class="count" data-count="10" data-suffix="+">0</strong><span>years of engineering experience</span></div>
+        <div class="strip-item"><strong class="count" data-count="20" data-suffix="+">0</strong><span>GPU &amp; HPC projects delivered</span></div>
+        <div class="strip-item"><strong class="count" data-count="99.99" data-decimals="2" data-suffix="%">0</strong><span>uptime on production platforms</span></div>
+        <div class="strip-item"><strong class="count" data-count="40" data-suffix="×">0</strong><span>best speed-up over baseline CPU code</span></div>
+      </div>
+    </section>
+
+    <!-- ───────────── Capabilities ───────────── -->
+    <section class="section" id="capabilities" aria-labelledby="cap-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Capabilities</p>
+          <h2 id="cap-title">Deep engineering across the whole stack</h2>
+          <p class="lead">Most performance problems are not solved at one layer. We work from silicon to service boundary, so the fixes hold up in production.</p>
+        </header>
+
+        <div class="cards">
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 10h2v4H7zM11 10h2v4h-2zM15 10h2v4h-2zM6 3v3M12 3v3M18 3v3M6 18v3M12 18v3M18 18v3"/></svg></div>
+            <h3>GPU computing</h3>
+            <p>CUDA, HIP and SYCL kernels for simulation, analytics, signal processing and ML inference. Memory-bound or compute-bound — we find the roofline and push against it.</p>
+            <ul class="chips"><li>CUDA</li><li>HIP</li><li>Tensor cores</li><li>Multi-GPU</li></ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg></div>
+            <h3>Modern C++</h3>
+            <p>Clean, testable C++20/23: templates and concepts, zero-cost abstractions, lock-free structures, allocators and predictable memory layouts that keep the cache happy.</p>
+            <ul class="chips"><li>C++20/23</li><li>Concepts</li><li>Lock-free</li><li>SIMD</li></ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7 6h10M6.3 7.8l4.4 8.4M17.7 7.8l-4.4 8.4"/></svg></div>
+            <h3>System design</h3>
+            <p>Architectures that scale and degrade gracefully: scheduling, batching, back-pressure, consistency trade-offs and failure domains, documented before the first line ships.</p>
+            <ul class="chips"><li>Distributed</li><li>Low-latency</li><li>gRPC</li><li>Kubernetes</li></ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 19h18M5 15l4-4 3 3 6-7"/><circle cx="18" cy="7" r="1.4"/></svg></div>
+            <h3>Performance engineering</h3>
+            <p>Profile-driven optimization with Nsight, perf and flame graphs. We measure first, set budgets, and add benchmark gates to CI so regressions never sneak back in.</p>
+            <ul class="chips"><li>Nsight</li><li>perf / eBPF</li><li>Roofline</li><li>Benchmark CI</li></ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.5-8 4.5-8 7 0s4.5 8 7 0 3-6 6-6"/><path d="M2 18h20" opacity=".5"/></svg></div>
+            <h3>Scientific &amp; numerical</h3>
+            <p>Solvers, Monte Carlo, FFTs, sparse linear algebra and particle methods — numerically stable, reproducible, and validated against reference implementations.</p>
+            <ul class="chips"><li>Monte Carlo</li><li>FFT</li><li>Sparse LA</li><li>FP16 / BF16</li></ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.2 7.6 8 9 4.8-1.4 8-4.5 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg></div>
+            <h3>Reliability &amp; tooling</h3>
+            <p>Sanitizers, fuzzing, deterministic replay, observability and build systems. Fast code is only useful if it is also correct, debuggable and maintainable.</p>
+            <ul class="chips"><li>CMake / Bazel</li><li>Sanitizers</li><li>Tracing</li><li>Fuzzing</li></ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Code ───────────── -->
+    <section class="section section-alt" id="code" aria-labelledby="code-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Code</p>
+          <h2 id="code-title">The kind of code we write every day</h2>
+          <p class="lead">Small, sharp and explicit about the hardware: shared-memory tiling, cache-line aware lock-free queues and overlapped copy/compute pipelines.</p>
+        </header>
+
+        <div class="code-window reveal">
+          <div class="code-bar">
+            <div class="tablist" role="tablist" aria-label="Code samples" id="code-tabs">
+              <button role="tab" id="tab-kernel" aria-selected="true" aria-controls="code-panel" data-sample="kernel" type="button">matmul.cu</button>
+              <button role="tab" id="tab-queue" aria-selected="false" aria-controls="code-panel" data-sample="queue" tabindex="-1" type="button">spsc_queue.hpp</button>
+              <button role="tab" id="tab-pipeline" aria-selected="false" aria-controls="code-panel" data-sample="pipeline" tabindex="-1" type="button">pipeline.cu</button>
+            </div>
+            <button class="copy-btn" id="copy-code" type="button">Copy</button>
+          </div>
+          <div class="code-panel" id="code-panel" role="tabpanel" aria-labelledby="tab-kernel" tabindex="0">
+            <pre><code id="code-out"></code></pre>
+          </div>
+          <p class="code-caption" id="code-caption"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Architecture ───────────── -->
+    <section class="section" id="architecture" aria-labelledby="arch-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">System design</p>
+          <h2 id="arch-title">A reference architecture for GPU services</h2>
+          <p class="lead">A typical compute platform we design. Select a stage to see the decisions behind it.</p>
+        </header>
+
+        <div class="arch reveal">
+          <div class="flow" role="tablist" aria-label="Architecture stages" id="arch-tabs">
+            <button class="node" role="tab" id="node-0" aria-selected="true" aria-controls="arch-panel" data-node="0" type="button">
+              <span class="node-idx">01</span><span class="node-name">Clients</span><span class="node-sub">SDKs · gRPC</span>
+            </button>
+            <span class="link" aria-hidden="true"></span>
+            <button class="node" role="tab" id="node-1" aria-selected="false" aria-controls="arch-panel" data-node="1" tabindex="-1" type="button">
+              <span class="node-idx">02</span><span class="node-name">Ingest</span><span class="node-sub">Auth · limits</span>
+            </button>
+            <span class="link" aria-hidden="true"></span>
+            <button class="node" role="tab" id="node-2" aria-selected="false" aria-controls="arch-panel" data-node="2" tabindex="-1" type="button">
+              <span class="node-idx">03</span><span class="node-name">Scheduler</span><span class="node-sub">Batching · QoS</span>
+            </button>
+            <span class="link" aria-hidden="true"></span>
+            <button class="node" role="tab" id="node-3" aria-selected="false" aria-controls="arch-panel" data-node="3" tabindex="-1" type="button">
+              <span class="node-idx">04</span><span class="node-name">GPU workers</span><span class="node-sub">C++ · CUDA</span>
+            </button>
+            <span class="link" aria-hidden="true"></span>
+            <button class="node" role="tab" id="node-4" aria-selected="false" aria-controls="arch-panel" data-node="4" tabindex="-1" type="button">
+              <span class="node-idx">05</span><span class="node-name">Storage</span><span class="node-sub">Results · traces</span>
+            </button>
+          </div>
+
+          <div class="arch-panel" id="arch-panel" role="tabpanel" aria-labelledby="node-0" tabindex="0" aria-live="polite">
+            <div class="arch-main">
+              <h3 id="arch-title-out"></h3>
+              <p id="arch-desc-out"></p>
+              <ul class="chips" id="arch-tags-out"></ul>
+            </div>
+            <div class="arch-notes">
+              <h4>Design considerations</h4>
+              <ul id="arch-notes-out"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Approach ───────────── -->
+    <section class="section section-alt" id="approach" aria-labelledby="approach-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Approach</p>
+          <h2 id="approach-title">Measure. Design. Build. Prove.</h2>
+          <p class="lead">A repeatable engineering loop that replaces guesswork with evidence.</p>
+        </header>
+
+        <ol class="steps">
+          <li class="step reveal"><span class="step-n">1</span><h3>Measure</h3><p>Profile the real workload on real hardware. We establish a baseline, find the bottleneck, and agree on a performance budget.</p></li>
+          <li class="step reveal"><span class="step-n">2</span><h3>Design</h3><p>Choose the algorithm, data layout and system topology that fit the budget. Trade-offs are written down, reviewed and revisited.</p></li>
+          <li class="step reveal"><span class="step-n">3</span><h3>Build</h3><p>Incremental delivery in small, reviewable changes — tested, sanitized and benchmarked from the first commit.</p></li>
+          <li class="step reveal"><span class="step-n">4</span><h3>Prove</h3><p>Benchmark gates in CI, load tests and dashboards demonstrate the gains — and keep them as the codebase evolves.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ───────────── Results ───────────── -->
+    <section class="section" id="results" aria-labelledby="results-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <p class="eyebrow">Results</p>
+          <h2 id="results-title">Outcomes engineers care about</h2>
+          <p class="lead">Representative engagement results across finance, simulation and media processing.</p>
+        </header>
+
+        <div class="cases">
+          <article class="case reveal">
+            <p class="case-metric"><span class="count" data-count="38" data-suffix="×">0</span></p>
+            <h3>Risk simulation</h3>
+            <p>Monte Carlo pricing engine moved from a CPU farm to multi-GPU nodes. Overnight batch became an interactive, on-demand query.</p>
+            <ul class="chips"><li>CUDA</li><li>NCCL</li><li>C++20</li></ul>
+          </article>
+          <article class="case reveal">
+            <p class="case-metric"><span class="count" data-count="12" data-suffix=" µs">0</span></p>
+            <h3>Market-data path</h3>
+            <p>Lock-free, allocation-free ingest pipeline with cache-aligned queues and kernel-bypass networking. p99 tail latency cut by 9×.</p>
+            <ul class="chips"><li>Lock-free</li><li>DPDK</li><li>perf</li></ul>
+          </article>
+          <article class="case reveal">
+            <p class="case-metric"><span class="count" data-count="4.2" data-decimals="1" data-suffix="M">0</span><small>events/s per node</small></p>
+            <h3>Video analytics platform</h3>
+            <p>Batching scheduler and CUDA-graph workers keep GPUs above 90% utilization while honouring per-tenant latency SLOs.</p>
+            <ul class="chips"><li>gRPC</li><li>TensorRT</li><li>Kubernetes</li></ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Contact ───────────── -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container contact-grid">
+        <div class="contact-copy reveal">
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">Have a workload that's too slow?</h2>
+          <p class="lead">Tell us about it. You'll hear back from an engineer — not a sales team — within one business day.</p>
+          <ul class="contact-list">
+            <li><span>Email</span><a href="mailto:hello@computeit.sk">hello@computeit.sk</a></li>
+            <li><span>Engagements</span>Audits · Prototypes · Embedded teams · Long-term platform work</li>
+            <li><span>Timezone</span>Remote-first, overlapping EU &amp; US hours</li>
+          </ul>
+        </div>
+
+        <form class="form reveal" id="contact-form" novalidate>
+          <div class="field-row">
+            <div class="field">
+              <label for="f-name">Name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required>
+              <p class="error" id="e-name" role="alert"></p>
+            </div>
+            <div class="field">
+              <label for="f-email">Work email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+              <p class="error" id="e-email" role="alert"></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-type">What do you need?</label>
+            <select id="f-type" name="type">
+              <option>GPU acceleration of an existing workload</option>
+              <option>C++ performance audit</option>
+              <option>System / architecture design review</option>
+              <option>New platform build</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-msg">Tell us about the problem</label>
+            <textarea id="f-msg" name="message" rows="5" required minlength="20" placeholder="Current runtime, data size, hardware, target…"></textarea>
+            <p class="error" id="e-msg" role="alert"></p>
+          </div>
+          <button class="btn btn-primary" type="submit">Send message</button>
+          <p class="form-status" id="form-status" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ───────────── Footer ───────────── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <a class="brand" href="#top" aria-label="ComputeIT — back to top">
+          <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="4" y="4" width="24" height="24" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+            <rect x="10" y="10" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="18" y="10" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="10" y="18" width="4" height="4" rx="1" fill="currentColor"/>
+            <rect x="18" y="18" width="4" height="4" rx="1" class="mark-hot"/>
+          </svg>
+          <span class="brand-name">Compute<b>IT</b></span>
+        </a>
+        <p class="footer-tag">GPU computing, C++ and system design.</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <a href="#capabilities">Capabilities</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#results">Results</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <p class="copyright">© <span id="year">2026</span> ComputeIT. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
