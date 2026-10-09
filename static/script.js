@@ -545,6 +545,14 @@ void run_pipeline(const float* h_in, float* h_out, size_t total, size_t chunk) {
     const form = $('#contact-form');
     if (!form) return;
     const status = $('#form-status');
+    const token = $('#f-token');
+
+    // Signed load time; the server drops submissions sent too soon after it.
+    const loadToken = () => fetch('/api/form-token')
+      .then((res) => res.json())
+      .then((data) => { token.value = data.token; })
+      .catch(() => {});
+    loadToken();
 
     const rules = {
       name: { el: $('#f-name'), err: $('#e-name'), check: (v) => (v.trim().length >= 2 ? '' : 'Please enter your name.') },
@@ -587,11 +595,14 @@ void run_pipeline(const float* h_in, float* h_out, size_t total, size_t chunk) {
           body: JSON.stringify(Object.fromEntries(new FormData(form))),
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
+        if (!res.ok) throw new Error(data.detail || data.message || `Request failed (${res.status})`);
         form.reset();
         status.textContent = data.message || 'Thanks — your message is in.';
-      } catch (_) {
-        status.textContent = 'Sorry, something went wrong sending your message. Please try again.';
+        loadToken();
+      } catch (err) {
+        status.textContent = err.message.startsWith('This form has expired')
+          ? err.message
+          : 'Sorry, something went wrong sending your message. Please try again.';
       } finally {
         submitBtn.disabled = false;
       }

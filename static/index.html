@@ -288,6 +288,12 @@
         </div>
 
         <form class="form reveal" id="contact-form" novalidate>
+          <!-- Honeypot: hidden from people, but naive bots fill it in. Submissions with a value are dropped. -->
+          <div class="hp" aria-hidden="true">
+            <label for="f-website">Website</label>
+            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <input type="hidden" name="token" id="f-token">
           <div class="field-row">
             <div class="field">
               <label for="f-name">Name</label>

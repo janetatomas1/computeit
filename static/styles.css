@@ -581,6 +581,8 @@ textarea { resize: vertical; min-height: 120px; }
   border-radius: calc(var(--radius) + 2px);
   box-shadow: var(--shadow);
 }
+/* Contact-form honeypot: off-screen rather than display:none, which some bots skip. */
+.hp { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
 .field-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .form .btn { justify-self: start; }
 .error { color: #ff6b6b; font-size: 0.8rem; min-height: 0; }

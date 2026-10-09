@@ -12,16 +12,22 @@ debugging; the environment variables are commented out for now:
     SMTP_FROM      From address, default SMTP_USER or computeit@computeit.sk
     CONTACT_TO     where submissions go, default computeit@computeit.sk
     DB_PATH        SQLite file, default ./computeit.db
+    FORM_SECRET    key for signing form tokens; random per process if unset
+                   (a restart then invalidates forms already open in browsers)
 """
+import hashlib
+import hmac
 import logging
 import os
+import secrets
 import smtplib
 import sqlite3
+import time
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from pathlib import Path
 
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import BackgroundTasks, FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -35,6 +41,10 @@ SMTP_STARTTLS = True
 SMTP_USER = "computeit@computeit.sk"
 SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 SMTP_FROM = SMTP_USER
+
+# Bot protection: submissions faster than this after the form loaded are dropped.
+FORM_MIN_SECONDS = 3
+FORM_SECRET = (os.getenv("FORM_SECRET") or secrets.token_hex(32)).encode()
 
 log = logging.getLogger("uvicorn.error")
 app = FastAPI(title="ComputeIT")
@@ -126,16 +136,55 @@ def email_submission(submission_id: int, form: "Contact") -> None:
     log.info("Emails sent for submission #%d", submission_id)
 
 
+# ───────── Form tokens ─────────
+def sign(ts: str) -> str:
+    return hmac.new(FORM_SECRET, ts.encode(), hashlib.sha256).hexdigest()
+
+
+def token_age(token: str) -> float | None:
+    """Seconds since the token was issued, or None if it is missing or forged."""
+    ts, _, sig = token.partition(".")
+    if not ts.isdigit() or not hmac.compare_digest(sig, sign(ts)):
+        return None
+    return time.time() - int(ts)
+
+
 # ───────── API ─────────
 class Contact(BaseModel):
     name: str = Field(min_length=2, max_length=200)
     email: str = Field(pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]{2,}$", max_length=320)
     type: str = Field(default="", max_length=200)
     message: str = Field(min_length=20, max_length=10_000)
+    # Honeypot: hidden in the page, so only bots fill it in.
+    website: str = Field(default="", max_length=500)
+    # Signed load time from /api/form-token, for the minimum-fill-time check.
+    token: str = Field(default="", max_length=200)
+
+
+@app.get("/api/form-token")
+def form_token():
+    ts = str(int(time.time()))
+    return {"token": f"{ts}.{sign(ts)}"}
 
 
 @app.post("/api/contact")
 def contact(form: Contact, background: BackgroundTasks):
+    ok = {
+        "ok": True,
+        "message": f"Thanks, {form.name.split()[0]} — your message is in. "
+        "An engineer will reply within one business day.",
+    }
+    if form.website:
+        # Pretend it worked so the bot has no signal to adapt to.
+        log.info("Dropped honeypot submission from %s <%s>", form.name, form.email)
+        return ok
+    age = token_age(form.token)
+    if age is None:
+        raise HTTPException(400, "This form has expired. Please reload the page and try again.")
+    if age < FORM_MIN_SECONDS:
+        log.info("Dropped too-fast submission (%.1fs) from %s <%s>", age, form.name, form.email)
+        return ok
+
     with db() as conn:
         cur = conn.execute(
             "INSERT INTO submissions (received, name, email, type, message) VALUES (?, ?, ?, ?, ?)",
@@ -145,11 +194,7 @@ def contact(form: Contact, background: BackgroundTasks):
     log.info("Contact form #%d from %s <%s>", submission_id, form.name, form.email)
     # Send after the response so the visitor isn't kept waiting on SMTP.
     background.add_task(email_submission, submission_id, form)
-    return {
-        "ok": True,
-        "message": f"Thanks, {form.name.split()[0]} — your message is in. "
-        "An engineer will reply within one business day.",
-    }
+    return ok
 
 
 # Mounted last so /api routes take precedence; html=True serves index.html at "/".
