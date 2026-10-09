@@ -97,7 +97,7 @@
 
   function initReveal() {
     // Stagger siblings that reveal together.
-    $$('.cards, .cases, .steps').forEach((group) => {
+    $$('.cards, .cases').forEach((group) => {
       $$('.reveal', group).forEach((el, i) => el.style.setProperty('--i', i));
     });
 

@@ -523,28 +523,6 @@ textarea { resize: vertical; min-height: 120px; }
   width: 9px; height: 9px; border-radius: 2px; background: var(--accent);
 }
 
-/* ───────── Steps ───────── */
-.steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 20px;
-  counter-reset: step;
-}
-.step { position: relative; padding-top: 22px; border-top: 2px solid var(--line); }
-.step::before {
-  content: ""; position: absolute; top: -2px; left: 0; height: 2px; width: 36%;
-  background: var(--accent);
-}
-.step-n {
-  display: inline-grid; place-items: center;
-  width: 34px; height: 34px; border-radius: 9px;
-  font-family: var(--font-mono); font-weight: 600;
-  background: var(--accent-soft); color: var(--accent);
-  margin-bottom: 14px;
-}
-.step h3 { font-size: 1.15rem; margin-bottom: 8px; letter-spacing: -0.01em; }
-.step p { color: var(--muted); font-size: 0.94rem; }
-
 /* ───────── Case results ───────── */
 .cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 18px; }
 .case {
@@ -610,10 +588,6 @@ textarea { resize: vertical; min-height: 120px; }
 /* ==========================================================================
    Responsive
    ========================================================================== */
-@media (max-width: 1040px) {
-  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
-}
-
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; }
   .term { max-width: 560px; }
@@ -662,7 +636,6 @@ textarea { resize: vertical; min-height: 120px; }
 
 @media (max-width: 620px) {
   #hero-canvas { opacity: 0.5; }
-  .steps { grid-template-columns: 1fr; }
   .field-row { grid-template-columns: 1fr; }
   .footer-inner { grid-template-columns: 1fr; }
   .hero-actions .btn { flex: 1 1 100%; }
